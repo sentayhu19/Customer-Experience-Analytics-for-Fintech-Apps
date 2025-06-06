@@ -196,3 +196,7 @@ cython_debug/
 
 # Oracle DB config
 /db/db_config.py
+
+
+
+data/*.csv
