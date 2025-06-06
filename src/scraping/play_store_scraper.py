@@ -4,9 +4,9 @@ from datetime import datetime
 from pathlib import Path
 
 BANK_APPS = [
-    {"name": "Commercial Bank of Ethiopia", "app_id": "com.combankethio.mobilebanking"},
-    {"name": "Bank of Abyssinia", "app_id": "com.abyssiniasoftware.boa"},
-    {"name": "Dashen Bank", "app_id": "com.m2m.dashenbank"}
+    {"name": "Commercial Bank of Ethiopia", "app_id": "com.combanketh.mobilebanking"},
+    {"name": "Bank of Abyssinia", "app_id": "com.boa.boaMobileBanking"},
+    {"name": "Dashen Bank", "app_id": "com.dashen.dashensuperapp"}
 ]
 
 REVIEWS_PER_BANK = 400
@@ -15,7 +15,10 @@ OUTPUT_FILE = Path(__file__).parent.parent.parent / "data" / "clean_reviews.csv"
 
 def fetch_reviews(app_id, bank_name, count):
     all_reviews = []
-    for r, _ in reviews(app_id, lang='en', country='us', sort=Sort.NEWEST, count=count):
+    result, _ = reviews(app_id, lang='en', country='us', sort=Sort.NEWEST, count=count)
+    if not result:
+        print(f"Warning: No reviews found for {bank_name} ({app_id})")
+    for r in result:
         all_reviews.append({
             "review": r.get("content", ""),
             "rating": r.get("score"),
@@ -24,6 +27,7 @@ def fetch_reviews(app_id, bank_name, count):
             "source": "Google Play"
         })
     return all_reviews
+
 
 
 def preprocess(df):
