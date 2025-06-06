@@ -1,0 +1,11 @@
+google-play-scraper==1.2.4
+--only-binary=:all: pandas>=2.2.0
+numpy>=1.24.0
+sqlalchemy==2.0.30
+oracledb==3.1.1
+nltk>=3.8.0
+scikit-learn==1.4.2
+matplotlib>=3.7.0
+seaborn==0.13.2
+jupyter==1.0.0
+tqdm==4.66.4
