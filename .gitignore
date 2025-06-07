@@ -195,7 +195,7 @@ cython_debug/
 
 
 # Oracle DB config
-/db/db_config.py
+src/db/db_config.py
 
 
 
