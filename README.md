@@ -1,30 +1,93 @@
 # Customer Experience Analytics for Fintech Apps
 
-This project analyzes customer satisfaction with mobile banking apps by collecting and processing user reviews from the Google Play Store for three Ethiopian banks: Commercial Bank of Ethiopia (CBE), Bank of Abyssinia (BOA), and Dashen Bank.
+A modular and robust pipeline for analyzing customer experience and satisfaction with fintech mobile apps, focusing on Ethiopian banks: Commercial Bank of Ethiopia (CBE), Bank of Abyssinia (BOA), and Dashen Bank.
 
-## Features
-- Scrape Google Play Store reviews
-- Sentiment and theme analysis
-- Store cleaned data in Oracle DB
-- Visualize insights and generate reports
+## Key Features
+- Automated scraping of Google Play Store reviews
+- Comprehensive data cleaning and preprocessing
+- **Rating-based sentiment mapping** for robust sentiment analysis
+- Extraction of key drivers and pain points using NLP
+- Modular, maintainable codebase (analysis, recommendations, visualization, ethics)
+- Insightful visualizations and actionable recommendations
+- Professional reporting and export capabilities
 
-## Structure
-- `data/` - Raw and processed datasets
-- `notebooks/` - Jupyter notebooks for analysis
-- `src/` - Source code (scraping, processing, db, visualization)
-- `reports/` - Generated reports and figures
-- `tests/` - Unit tests
+## Project Structure
+- `data/` — Raw and processed datasets
+- `notebooks/` — Jupyter notebooks for analysis and reporting
+- `src/` — Modular Python source code:
+  - `analysis/` — Insights, sentiment, visualization, ethics modules
+  - `recommendations/` — Automated improvement suggestions
+- `reports/` — Generated reports and figures
+- `tests/` — Unit tests
 
-## Methodology
+## Analysis Pipeline
 
 ### 1. Data Collection
-- Reviews are scraped from the Google Play Store for each bank's official mobile app using the `google-play-scraper` Python package.
-- For each bank, a configurable number of the most recent reviews are fetched, including review text, rating, date, bank name, and source.
+- Reviews are scraped from the Google Play Store using the `google-play-scraper` Python package for each bank's official app.
+- Each review includes: review text, rating, date, bank name, and source.
 
 ### 2. Data Cleaning & Preprocessing
-- **Deduplication:** Duplicate reviews for the same bank are removed to ensure unique feedback is analyzed.
-- **Missing Data Handling:** Rows with missing review text, rating, or date are dropped to maintain data quality.
-- **Date Normalization:** All review dates are converted to the ISO format `YYYY-MM-DD` for consistency.
+- **Deduplication:** Remove duplicate reviews per bank.
+- **Missing Data Handling:** Drop rows with missing review text, rating, or date.
+- **Date Normalization:** Convert all dates to ISO format (`YYYY-MM-DD`).
+- **Column Standardization:** Ensure columns: `review`, `rating`, `date`, `bank`, `source`.
+
+### 3. Sentiment Mapping
+- **Robust Sentiment Assignment:**
+  - Reviews are assigned sentiment labels based on their star rating to mitigate issues from typos, sarcasm, or ambiguous review text.
+  - Mapping logic:
+    - Ratings **4 or 5** → `positive`
+    - Ratings **1 or 2** → `negative`
+    - Rating **3** → `neutral`
+  - This sentiment is stored in the `derived_sentiment` column and used for all downstream analysis.
+
+### 4. Modular Analysis & Visualization
+- **Insights Extraction:** Identify top drivers (positive keywords) and pain points (negative keywords) for each bank using NLP.
+- **Visualization:**
+  - Sentiment trends over time
+  - Rating distributions per bank
+  - Word clouds for review themes
+- **Recommendations:** Generate actionable suggestions for app improvement based on pain points and drivers.
+- **Ethics:** Assess and note potential biases in review data.
+
+### 5. Reporting
+- All analysis and visualizations are integrated into professional, reproducible Jupyter notebooks and exported reports.
+
+## Usage
+
+### Setup
+Install dependencies:
+```bash
+pip install -r requirements.txt
+```
+
+### Example Workflow
+```python
+import pandas as pd
+from analysis.insights import extract_drivers_painpoints
+
+def map_rating_to_sentiment(rating):
+    if rating >= 4:
+        return 'positive'
+    elif rating <= 2:
+        return 'negative'
+    else:
+        return 'neutral'
+
+df = pd.read_csv('data/reviews_with_sentiment.csv')
+df['derived_sentiment'] = df['rating'].apply(map_rating_to_sentiment)
+insights = extract_drivers_painpoints(df, sentiment_col='derived_sentiment')
+print(insights)
+```
+
+## Professional Practices
+- Modular, reusable codebase for easy maintenance and extension
+- Clear separation of analysis, visualization, and recommendations
+- Ethical considerations and bias assessment included
+
+## License
+This project is licensed under the MIT License.
+
 - **Column Standardization:** The cleaned dataset contains the following columns: `review`, `rating`, `date`, `bank`, `source`.
 
 ### 3. Data Export
